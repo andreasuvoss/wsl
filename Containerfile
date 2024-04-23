@@ -32,4 +32,3 @@ RUN git clone https://github.com/andreasuvoss/dotfiles.git repos/dotfiles
 RUN stow -d /home/$USER/repos/dotfiles git idea nvim starship task zellij zsh -t /home/$USER
 RUN nvim --headless "+Lazy! sync" +qa
 RUN nvim --headless "+TSInstallSync! all" +qa
-# RUN nvim --headless "
