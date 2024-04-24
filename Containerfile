@@ -17,18 +17,18 @@ RUN dnf install docker neovim perl openssl git rust zsh passwd nodejs fuse dotne
         zsh-completions starship stow bat azure-cli lm_sensors libgtop2-devel ripgrep tree-sitter-cli libstdc++-static\
         libstdc++ gcc-c++ cargo -y
 
-RUN cargo install --locked zellij
-
 COPY ./resources/wsl.conf /etc/wsl.conf
 
 RUN useradd -ms /bin/zsh $USER
-RUN usermod -aG docker $USER
+RUN usermod -aG docker,wheel $USER
+RUN echo "${USER}:pass" | chpasswd
 USER $USER
 WORKDIR /home/$USER
+RUN cargo install --locked zellij
 
 RUN echo 'ZDOTDIR=$HOME/.config/zsh' > $HOME/.zshenv
 RUN mkdir -p repos
-RUN git clone https://github.com/andreasuvoss/dotfiles.git repos/dotfiles
+RUN git clone https://github.com/andreasuvoss/dotfiles.git /home/$USER/repos/dotfiles
 RUN stow -d /home/$USER/repos/dotfiles git idea nvim starship task zellij zsh -t /home/$USER
 RUN nvim --headless "+Lazy! sync" +qa
 RUN nvim --headless "+TSInstallSync! all" +qa
